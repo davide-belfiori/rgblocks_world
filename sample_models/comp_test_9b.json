@@ -1,0 +1,20 @@
+[
+    [],
+
+    [ { "id": "Green_0", "color_group": "Green", "rgb": [0, 255, 0] },
+      { "id": "Yellow_1", "color_group": "Yellow", "rgb": [255, 255, 0] },
+      { "id": "Blue1", "color_group": "Blue", "rgb": [0, 0, 255] }],
+
+    [ { "id": "Red_0", "color_group": "Red", "rgb": [255, 0, 0] },
+      { "id": "Green_1", "color_group": "Green", "rgb": [0, 255, 0] }],
+
+    [{ "id": "Yellow_0", "color_group": "Yellow", "rgb": [255, 255, 0] }],
+
+    [ { "id": "Blue0", "color_group": "Blue", "rgb": [0, 0, 255] },
+      { "id": "Red_1", "color_group": "Red", "rgb": [255, 0, 0] }],
+
+    [{ "id": "Green_2", "color_group": "Green", "rgb": [0, 255, 0] }],
+
+    []
+  ]
+  
