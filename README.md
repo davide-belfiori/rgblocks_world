@@ -34,3 +34,18 @@ A questo punto l'applicazione formula un problema di **ricerca nello spazio degl
 Il *Breadth First Tree Search* è l'opzione di default, tuttavia l'utente può scegliere quale algoritmo utilizzare.
 
 ![](/app_snapshot/pagina_modello.jpg)
+
+## **Eseguire il codice**
+
+Step 1: Clonare la repository
+
+```
+git clone https://github.com/davide-belfiori/rgblocks_world
+cd rgblocks_world
+```
+
+Step 2: Eseguire con Python
+
+```
+python RGBlockWorld.py
+```
