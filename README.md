@@ -47,5 +47,5 @@ cd rgblocks_world
 Step 2: Eseguire con Python
 
 ```
-python RGBlockWorld.py
+python RGBlocksWorld.py
 ```
