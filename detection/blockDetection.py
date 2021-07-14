@@ -1,5 +1,4 @@
 import numpy as np
-from math import ceil, floor
 
 from modelling.block import Block
 import processing.imageProcessing as ip
@@ -8,10 +7,10 @@ import processing.geometry as geo
 
 def find_blocks(frame, settings, colors):
 
-    blocks = list()
-    mask = np.array([])
-    contours = np.array([])
-    sub = np.array([])
+    blocks = list() # lista di blocchi riconosciuti
+    mask = np.array([]) # maschera di colore
+    contours = np.array([]) # maschera dei bordi
+    sub = np.array([]) # maschera differenza
 
     for color in colors:
         found, color_mask, color_contours, sub_mask = find_blocks_by_color(frame, 
@@ -51,6 +50,31 @@ def find_blocks_by_color(frame, color, subtract_contours=True,
                         close_size = 3,
                         search_step = 1, max_search_steps = 3):
 
+    '''
+        Restituisce la lista dei blocchi di un dato colore riconosciuti all'interno di una immagine.
+
+        Parametri:
+        - frame: immagine (intesa in formato RGB)
+        - color: colore
+        - subtract_contours: flag booleano che indica se utilizzare o meno la sottrazione dei bordi per il riconoscimento dei blocchi
+        - min_contour_area: area minima di accettazione di una regione di colore
+        - ca_scale_factor: fattore di scala dell'area minima di accettazione del contorno
+        - max_edge_ratio: rapporto massimo tra le dimensioni del rettangolo minimo di una regione di colore
+        - min_contour_completeness: percentuale minima di completezza dell'area di una regione di colore rispetto al suo rettangolo minimo
+        - contour_dilation: fattore di dilatazione della maschera dei contorni
+        - contour_threshold: soglia di luminosità della maschera dei contorni
+        - cd_scale_factor: fattore di scala del valore di dilatazione
+        - close_size: fattore di chiusura della maschera differenza
+        - search_step: indice di iterazione
+        - max_search_steps: numero massimo di iterazioni
+
+        Restituisce:
+        - lista di blocchi riconosciuti
+        - maschera di colore
+        - maschera dei bordi
+        - differenza tra maschera di colore e maschera dei bordi
+    '''
+
     # estrai la maschera di colore
     maschera_colore = ip.extractColorHSV(frame, color.lowerHSV(), color.upperHSV())
 
@@ -79,7 +103,7 @@ def find_blocks_by_color(frame, color, subtract_contours=True,
     # processa le regioni per trovare i blocchi effettivi
     for blob in blob_list:
 
-        # ontrolla se una regione è valida
+        # controlla se una regione è valida
         if contour_completeness(blob) >= min_contour_completeness and edge_ratio(blob.minRect) < max_edge_ratio :
             toAppend = Block(id = color.color_id,
                                 color_group = color.color_group,
@@ -88,53 +112,40 @@ def find_blocks_by_color(frame, color, subtract_contours=True,
             blocks.append(toAppend)
 
         elif search_step <= max_search_steps:
-            # get from original frame only pixels included in blob contours
+            # estrai dall'immagine originale solo i pixel compresi nel contorno della regione
             sub_frame = ip.sub_frame(frame, blob.contour)
 
-            # try to find boxex in the sub-frame modifing search parameters
+            # affina la ricerca modificando i parametri di riconoscimento
             found,_,_,_ = find_blocks_by_color(sub_frame, color, subtract_contours=True,
                                          min_contour_area = min_contour_area * ca_scale_factor, ca_scale_factor = ca_scale_factor,
                                          max_edge_ratio=max_edge_ratio, min_contour_completeness=min_contour_completeness,
                                          contour_dilation = int(contour_dilation * cd_scale_factor), contour_threshold = contour_threshold, cd_scale_factor = cd_scale_factor,
                                          close_size = close_size,
                                          search_step = search_step + 1)
-            for box in found:
-                blocks.append(box)
+            for block in found:
+                blocks.append(block)
 
 
     return blocks, maschera_colore, maschera_contorni, maschera_differenza
 
 
 def edge_ratio(box):
-
+    '''
+        Calcola il rapporto tra i lati di un rettangolo.
+    '''
     e1 = geo.point_distance(box[0], box[1])
     e2 = geo.point_distance(box[1], box[2])
 
     return max(e1, e2) / (1.e-5 + min(e1, e2))
 
 
-def void_area(blob):
-
-    e1 = geo.point_distance(blob.minRect[0], blob.minRect[1])
-    e2 = geo.point_distance(blob.minRect[1], blob.minRect[2])
-
-    rect_area = e1 * e2
-    diff = rect_area - blob.contourArea
-    return diff * 100 / (1.e-5 + rect_area)
-
-
 def contour_completeness(blob):
-
+    '''
+        Calcola la percentuale di completezza dell'area di una regione
+        rispetto all'area del suo rettangolo minimo.
+    '''
     e1 = geo.point_distance(blob.minRect[0], blob.minRect[1])
     e2 = geo.point_distance(blob.minRect[1], blob.minRect[2])
     rect_area = e1 * e2
 
     return blob.contourArea * 100 / (1.e-5 + rect_area)
-
-
-def round_edge_ratio(er):
-    dec = er - floor(er)
-    if dec <= 0.4 :
-        return floor(er)
-
-    return ceil(er)

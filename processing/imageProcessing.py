@@ -7,6 +7,10 @@ SOBEL_GRADIENT_Y = 2
 
 class Blob:
 
+    '''
+        Classe che rappresenta una regione di una immagine
+    '''
+
     def __init__(self, contour, contour_approximation = 3) -> None:
         self.contour = contour
         self.contourArea = cv.contourArea(contour)
@@ -37,11 +41,11 @@ def BGRtoRGB(frame):
 def GRAYtoRBG(frame):
     return cv.cvtColor(frame, code=cv.COLOR_GRAY2RGB)
 
-def blank(height = 100, width = 100, depth = 0, pixel_tipe=np.uint8):
+def blank(height = 100, width = 100, depth = 0, pixel_type=np.uint8):
     if width > 0 and height > 0 :
         if depth > 0:
-            return np.zeros(shape=(height, width, depth), dtype=pixel_tipe)
-        return np.zeros(shape=(height, width), dtype=pixel_tipe)
+            return np.zeros(shape=(height, width, depth), dtype=pixel_type)
+        return np.zeros(shape=(height, width), dtype=pixel_type)
     return []
 
 def hstack(img1, img2):
@@ -71,7 +75,9 @@ def bitOr(img1, img2):
 
 def sub_frame(frame, contour):
     '''
-    Given a frame and a contuor, sets all the pixels of the frame that are NOT INSIDE the contour to 0.
+        Data una immagine ed un contorno, restituisce una nuova immagine in cui:
+        - tutti i pixel dell'immagine originale contenuti nel contorno vengono mantenuti
+        - tutti i pixel dell'immagine originale esclusi dal contorno vengono azzerati
     '''
     mask =  np.zeros(shape=frame.shape, dtype=np.uint8)
     cv.drawContours(mask, [np.int0(contour)], 0, color=(255,255,255),  thickness=cv.FILLED)
@@ -107,6 +113,15 @@ def binary_threshold(frame, threshold):
 def extractColorHSV(image, lowerHSV, upperHSV):
     '''
     Estrae da una immagine tutti i pixel che rientrano in un dato intervallo di colore
+
+    Parametri:
+    - image: immagine intesa in formato RGB
+    - lowerHSV: limite inferiore dell'intervallo di colore inteso in formato HSV
+    - upperHSV: limite superiore dell'intervallo di colore inteso in formato HSV
+
+    Restituisce:
+
+        Maschera di colore
     '''
     # Converte il frame da RGB ad HSV
     image_hsv = cv.cvtColor(image, cv.COLOR_RGB2HSV)
@@ -140,7 +155,6 @@ def find_contours(frame):
 
 
 def find_blobs(frame, min_contour_area = 0, contour_approx = 3):
-
     contours = find_contours(frame)
     blob_list = list()
     for c in contours :
