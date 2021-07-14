@@ -172,10 +172,10 @@ class Color:
             upper_value = np.array([0, 255, 255])
         if len(rgb) < 3:
             rgb = [30,30,30]
-        self.lowerH = IntRangeProperty(color_id +"_lH", "lower H", min=0, max=255, value=int(lower_value[0]))
+        self.lowerH = IntRangeProperty(color_id +"_lH", "lower H", min=0, max=180, value=int(lower_value[0]))
         self.lowerS = IntRangeProperty(color_id +"_lS", "lower S", min=0, max=255, value=int(lower_value[1]))
         self.lowerV = IntRangeProperty(color_id +"_lV", "lower V", min=0, max=255, value=int(lower_value[2]))
-        self.upperH = IntRangeProperty(color_id +"_uH", "upper H", min=0, max=255, value=int(upper_value[0]))
+        self.upperH = IntRangeProperty(color_id +"_uH", "upper H", min=0, max=180, value=int(upper_value[0]))
         self.upperS = IntRangeProperty(color_id +"_uS", "upper S", min=0, max=255, value=int(upper_value[1]))
         self.upperV = IntRangeProperty(color_id +"_uV", "upper V", min=0, max=255, value=int(upper_value[2]))
         self.R = IntRangeProperty(color_id + "R", "R", min=0, max=255, value=rgb[0])
