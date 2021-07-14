@@ -22,7 +22,7 @@ class Grab(Action):
         self.stack_index = stack_index
 
     def __str__(self) -> str:
-        return "Grab " + str(self.block_id)
+        return "Afferra " + str(self.block_id)
 
 class PutOn(Action):
     '''
@@ -46,7 +46,7 @@ class PutOn(Action):
         self.dst_stack_index = dst_stack_index
 
     def __str__(self) -> str:
-        return "Put " + str(self.block_id) + " on " + str(self.dst_block_id)
+        return "Metti " + str(self.block_id) + " su " + str(self.dst_block_id)
 
 class OnTable(Action):
     '''
@@ -66,7 +66,7 @@ class OnTable(Action):
         self.dst_stack_index = dst_stack_index
 
     def __str__(self) -> str:
-        return "Put " + str(self.block_id) + " on table"
+        return "Metti " + str(self.block_id) + " sul tavolo"
 
 
 class BlockWorldProblem(Problem):
